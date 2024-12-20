@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id @default(dbgenerated("generate_ulid()")) @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  roleValue   String    @map("role_value")
+  name        String
+  email       String
+  password    String
+  role        Role      @relation(fields: [roleValue], references: [value])
+  dateOfBirth DateTime? @map("date_of_birth")
+  contact     String?
+
+  @@map("users")
+}
+
+model Role {
+  value       String   @id @unique
+  label       String
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  users       User[]
+
+  @@map("roles")
+}
+
+model Lead {
+  id                     String     @id @default(dbgenerated("generate_ulid()")) @db.Uuid
+  createdAt              DateTime   @default(now()) @map("created_at")
+  updatedAt              DateTime   @default(now()) @updatedAt @map("updated_at")
+  deletedAt              DateTime?  @map("deleted_at")
+  firstName              String     @map("first_name")
+  lastName               String     @map("last_name")
+  fullName               String     @map("full_name")
+  owner                  String
+  email                  String
+  phone                  String
+  identificationDocument String     @map("identification_document")
+  nonCompliance          String     @map("non_compliance")
+  monthlyNetIncome       Float      @map("monthly_net_income")
+  maritalStatus          String     @map("marital_status")
+  currentlyResideIn      String     @map("currently_reside_in")
+  employmentRelationship String     @map("employment_relationship")
+  timeAtCompany          DateTime   @map("time_at_company")
+  taxPayerNumber         String     @map("tax_payer_number")
+  birthDate              DateTime   @map("birth_date")
+  age                    Int
+  districtName           String     @map("district_name")
+  statusValue            String     @map("status_value")
+  status                 LeadStatus @relation(fields: [statusValue], references: [value])
+
+  @@map("leads")
+}
+
+model LeadStatus {
+  value       String   @id @unique
+  label       String
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  leads       Lead[]
+
+  @@map("lead_status")
+}

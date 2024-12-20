@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:13
+    container_name: jp-db
+    restart: always
+    environment:
+      POSTGRES_USER: gabriel
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: jp-db
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+volumes:
+  postgres:
+    name: jp-db-postgres-volume
